@@ -5,9 +5,9 @@ import hmac
 import os
 from datetime import datetime, timezone
 from functools import wraps
-from typing import Any, Callable
+from typing import Callable
 
-from flask import Flask, jsonify, request
+from flask import Flask, current_app, jsonify, request
 
 from backend.db import connect, init_db, json_dumps, json_loads
 
@@ -39,7 +39,7 @@ def require_node_auth(view: Callable):
         if not token:
             return json_error("unauthorized", 401)
 
-        with connect(request.app.config["DB_PATH"]) if False else connect() as conn:
+        with connect(current_app.config["DB_PATH"]) as conn:
             row = conn.execute(
                 "SELECT node_name, token_sha256, enabled FROM nodes WHERE node_name = ?",
                 (node_name,),
@@ -87,13 +87,12 @@ def create_app(db_path: str | None = None) -> Flask:
         if row is None:
             return json_error("desired_state_not_found", 404)
 
-        state = json_loads(row["state_json"])
         return jsonify(
             {
                 "node_name": row["node_name"],
                 "generation": row["generation"],
                 "profile": row["profile"],
-                "state": state,
+                "state": json_loads(row["state_json"]),
                 "desired_hash": row["desired_hash"],
                 "updated_at": row["updated_at"],
             }
@@ -120,8 +119,7 @@ def create_app(db_path: str | None = None) -> Flask:
         if missing:
             return jsonify({"error": "missing_fields", "fields": missing}), 400
 
-        health_state = payload["health_state"]
-        if health_state not in HEALTH_STATES:
+        if payload["health_state"] not in HEALTH_STATES:
             return json_error("invalid_health_state", 400)
 
         numeric_fields = (
@@ -171,7 +169,7 @@ def create_app(db_path: str | None = None) -> Flask:
                     payload["persisted_rule_count"],
                     payload["runtime_jump"],
                     payload["persisted_jump"],
-                    health_state,
+                    payload["health_state"],
                     json_dumps(payload),
                 ),
             )
@@ -237,7 +235,11 @@ def create_app(db_path: str | None = None) -> Flask:
                 INSERT INTO audit_events(node_name, event_type, details_json, created_at)
                 VALUES (?, 'ACTION_RESULT', ?, ?)
                 """,
-                (node_name, json_dumps({"action_id": action_id, **payload}), now),
+                (
+                    node_name,
+                    json_dumps({"action_id": action_id, **payload}),
+                    now,
+                ),
             )
             conn.commit()
 
