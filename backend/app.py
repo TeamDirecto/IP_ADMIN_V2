@@ -236,6 +236,8 @@ def create_app(db_path: str | None = None) -> Flask:
 
         return "", 204
 
+    return app
+
 
 if __name__ == "__main__":
     create_app().run(
