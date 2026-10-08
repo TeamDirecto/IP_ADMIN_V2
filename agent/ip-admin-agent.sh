@@ -1,5 +1,5 @@
 #!/bin/bash
-# IP_ADMIN_V2 observer 0.1.0
+# IP_ADMIN_V2 observer 0.1.1
 set -u
 
 RULES_FILE="${IP_ADMIN_RULES_FILE:-/etc/iptables/rules.v4}"
@@ -22,13 +22,29 @@ if ! "$RESTORE" --test < "$RULES_FILE" >/dev/null 2>&1; then
   exit 1
 fi
 
-runtime_ips="$(printf '%s\n' "$runtime" | awk -v c="$CHAIN" '$1=="-A" && $2==c {for(i=1;i<=NF;i++) if($i=="-s"){x=$(i+1); sub(/\/32$/,"",x); print x}}' | sort -u)"
-persisted_ips="$(awk -v c="$CHAIN" '$1=="-A" && $2==c {for(i=1;i<=NF;i++) if($i=="-s"){x=$(i+1); sub(/\/32$/,"",x); print x}}' "$RULES_FILE" | sort -u)"
+runtime_rules="$(printf '%s\n' "$runtime" | awk -v c="$CHAIN" '$1=="-A" && $2==c' | sort)"
+persisted_rules="$(awk -v c="$CHAIN" '$1=="-A" && $2==c' "$RULES_FILE" | sort)"
 
-runtime_hash="$(printf '%s' "$runtime_ips" | sha256sum | awk '{print $1}')"
-persisted_hash="$(printf '%s' "$persisted_ips" | sha256sum | awk '{print $1}')"
+runtime_rule_count="$(printf '%s\n' "$runtime_rules" | awk 'NF{c++} END{print c+0}')"
+persisted_rule_count="$(printf '%s\n' "$persisted_rules" | awk 'NF{c++} END{print c+0}')"
 
-if [ "$runtime_hash" = "$persisted_hash" ]; then state=SYNCED; else state=DRIFT; fi
+runtime_chain="$(printf '%s\n' "$runtime" | grep -c "^:$CHAIN " 2>/dev/null || true)"
+persisted_chain="$(printf '%s\n' "$persisted" | grep -c "^:$CHAIN " 2>/dev/null || true)"
+runtime_jump="$(printf '%s\n' "$runtime" | awk -v c="$CHAIN" '$1=="-A" && $2=="INPUT" {for(i=1;i<=NF;i++) if($i=="-j" && $(i+1)==c) n++} END{print n+0}')"
+persisted_jump="$(printf '%s\n' "$persisted" | awk -v c="$CHAIN" '$1=="-A" && $2=="INPUT" {for(i=1;i<=NF;i++) if($i=="-j" && $(i+1)==c) n++} END{print n+0}')"
 
-printf '{"state":"%s","runtime_hash":"%s","persisted_hash":"%s"}\n' "$state" "$runtime_hash" "$persisted_hash"
+runtime_hash="$(printf '%s' "$runtime_rules" | sha256sum | awk '{print $1}')"
+persisted_hash="$(printf '%s' "$persisted_rules" | sha256sum | awk '{print $1}')"
+
+if [ "$runtime_chain" -ge 1 ] && [ "$persisted_chain" -ge 1 ] &&
+   [ "$runtime_jump" -ge 1 ] && [ "$persisted_jump" -ge 1 ] &&
+   [ "$runtime_rule_count" -eq "$persisted_rule_count" ] &&
+   [ "$runtime_hash" = "$persisted_hash" ]; then
+  state=SYNCED
+else
+  state=DRIFT
+fi
+
+printf '{"state":"%s","runtime_hash":"%s","persisted_hash":"%s","runtime_rule_count":%s,"persisted_rule_count":%s,"runtime_jump":%s,"persisted_jump":%s}\n'   "$state" "$runtime_hash" "$persisted_hash" "$runtime_rule_count" "$persisted_rule_count" "$runtime_jump" "$persisted_jump"
+
 [ "$state" = SYNCED ]
