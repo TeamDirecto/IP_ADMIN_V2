@@ -1,5 +1,5 @@
 #!/bin/bash
-# IP_ADMIN_V2 heartbeat reporter 0.1.0
+# IP_ADMIN_V2 heartbeat reporter 0.1.1
 set -u
 
 BACKEND_URL="${IP_ADMIN_BACKEND_URL:-}"
@@ -33,7 +33,7 @@ if [ -z "$OBSERVED" ]; then
   exit 0
 fi
 
-DESIRED="$(curl -4fsS   --connect-timeout 3   --max-time 5   -H "Authorization: Bearer $TOKEN"   "$BACKEND_URL/v1/nodes/$NODE_NAME/desired" 2>/dev/null)" || {
+DESIRED="$("$CURL" -4fsS   --connect-timeout 3   --max-time 5   -H "Authorization: Bearer $TOKEN"   "$BACKEND_URL/v1/nodes/$NODE_NAME/desired" 2>/dev/null)" || {
   echo "SKIP: desired state unavailable."
   exit 0
 }
