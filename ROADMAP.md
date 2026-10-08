@@ -19,16 +19,35 @@
 - [x] Detección de drift.
 - [x] Reporte de discrepancias.
 - [x] CI básica del agent.
-- [ ] Auditoría centralizada.
+- [x] Auditoría centralizada.
 
-## Fase 2 — Reconciliación controlada
+## Fase 2A — Backend mínimo
+
+- [x] API Flask inicial.
+- [x] SQLite con WAL y busy timeout.
+- [x] Autenticación por token por nodo.
+- [x] Endpoint DESIRED.
+- [x] Endpoint HEARTBEAT.
+- [x] Endpoint ACTION RESULT.
+- [x] Auditoría de heartbeat y resultados.
+- [x] Rechazo de resultados de acciones obsoletas.
+- [x] Tests unitarios del contrato.
+- [ ] Endpoint/flujo de administración de nodos.
+- [ ] Revisión de seguridad antes de exposición de red.
+- [ ] TLS/proxy de producción.
+- [ ] Métrica y monitoreo central.
+
+## Fase 2B — Reconciliación controlada
 
 - [ ] Aplicación idempotente.
-- [ ] Validación después de cada cambio.
+- [ ] Validación antes de cada cambio.
 - [ ] Persistencia automática.
+- [ ] Snapshot pre-cambio.
 - [ ] Rollback local.
-- [ ] Health check.
-- [ ] Modo `DRY_RUN`.
+- [ ] Health check post-cambio.
+- [ ] Modo DRY_RUN.
+- [ ] Acción con generación y expiración.
+- [ ] Evidencia de resultado.
 
 ## Fase 3 — Piloto
 
@@ -37,6 +56,7 @@
 - [ ] Comparar contra IP Manager actual.
 - [ ] Documentar diferencias.
 - [ ] Validar reinicio.
+- [ ] Probar recuperación de reglas después de reboot.
 
 ## Fase 4 — Migración gradual
 
@@ -44,6 +64,7 @@
 - [ ] Mantener IVR para nodos legacy.
 - [ ] Evitar doble escritura sobre el mismo recurso.
 - [ ] Monitorear drift.
+- [ ] Migración por grupos con rollback.
 
 ## Fase 5 — Consolidación
 
