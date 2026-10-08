@@ -7,7 +7,7 @@ import secrets
 from pathlib import Path
 
 from backend.db import connect, init_db, json_dumps
-from backend.app import utc_now
+from backend.utils import utc_now
 
 
 def hash_token(token: str) -> str:
