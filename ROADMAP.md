@@ -6,19 +6,20 @@
 - [x] Mantener IP Manager actual intacto.
 - [x] Mantener IVR/legacy como compatibilidad.
 - [x] Definir Git como fuente de código.
-- [ ] Definir modelo de datos.
-- [ ] Definir API.
-- [ ] Definir contrato Agent <-> Backend.
-- [ ] Definir estados DESIRED/APPLIED/PERSISTED.
+- [x] Definir modelo de datos.
+- [x] Definir API inicial.
+- [x] Definir contrato Agent <-> Backend.
+- [x] Definir estados DESIRED/APPLIED/PERSISTED.
 
 ## Fase 1 — Observabilidad
 
-- [ ] Agent en modo read-only.
-- [ ] Inventario de reglas.
-- [ ] Hash de estado.
-- [ ] Detección de drift.
-- [ ] Reporte de discrepancias.
-- [ ] Auditoría.
+- [x] Agent en modo read-only.
+- [x] Inventario de reglas.
+- [x] Hash de estado.
+- [x] Detección de drift.
+- [x] Reporte de discrepancias.
+- [x] CI básica del agent.
+- [ ] Auditoría centralizada.
 
 ## Fase 2 — Reconciliación controlada
 
@@ -27,6 +28,7 @@
 - [ ] Persistencia automática.
 - [ ] Rollback local.
 - [ ] Health check.
+- [ ] Modo `DRY_RUN`.
 
 ## Fase 3 — Piloto
 
