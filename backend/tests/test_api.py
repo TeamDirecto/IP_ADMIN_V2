@@ -6,8 +6,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from backend.app import create_app, token_hash, utc_now
+from backend.app import create_app
 from backend.db import connect
+from backend.utils import token_hash, utc_now
 
 
 class ApiTestCase(unittest.TestCase):
