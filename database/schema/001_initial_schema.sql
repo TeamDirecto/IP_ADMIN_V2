@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS access_requests (
         CHECK (target_type IN ('NODE','GROUP')),
     CONSTRAINT ck_access_request_status
         CHECK (status IN (
-            'PENDING','RECEIVED','APPLYING','ACTIVE',
+            'PENDING','RECEIVED','APPROVED','APPLYING','ACTIVE',
             'REJECTED','REVOKING','REVOKED','EXPIRING',
             'EXPIRED','ERROR'
         ))
