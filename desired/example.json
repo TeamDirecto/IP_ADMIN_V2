@@ -1,0 +1,13 @@
+{
+  "ips": [
+    "203.0.113.10"
+  ],
+  "tcp_ports": [
+    80,
+    443
+  ],
+  "udp_ports": [
+    5060
+  ],
+  "profile": "example-only"
+}
