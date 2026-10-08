@@ -1,5 +1,5 @@
 #!/bin/bash
-# IP_ADMIN_V2 observer 0.1.2
+# IP_ADMIN_V2 observer 0.1.3
 set -u
 
 RULES_FILE="${IP_ADMIN_RULES_FILE:-/etc/iptables/rules.v4}"
@@ -29,9 +29,9 @@ runtime_rule_count="$(printf '%s\n' "$runtime_rules" | awk 'NF{c++} END{print c+
 persisted_rule_count="$(printf '%s\n' "$persisted_rules" | awk 'NF{c++} END{print c+0}')"
 
 runtime_chain="$(printf '%s\n' "$runtime" | grep -c "^:$CHAIN " 2>/dev/null || true)"
-persisted_chain="$(printf '%s\n' "$persisted_rules" | grep -c "^:$CHAIN " 2>/dev/null || true)"
+persisted_chain="$(grep -c "^:$CHAIN " "$RULES_FILE" 2>/dev/null || true)"
 runtime_jump="$(printf '%s\n' "$runtime" | awk -v c="$CHAIN" '$1=="-A" && $2=="INPUT" {for(i=1;i<=NF;i++) if($i=="-j" && $(i+1)==c) n++} END{print n+0}')"
-persisted_jump="$(printf '%s\n' "$persisted_rules" | awk -v c="$CHAIN" '$1=="-A" && $2=="INPUT" {for(i=1;i<=NF;i++) if($i=="-j" && $(i+1)==c) n++} END{print n+0}')"
+persisted_jump="$(awk -v c="$CHAIN" '$1=="-A" && $2=="INPUT" {for(i=1;i<=NF;i++) if($i=="-j" && $(i+1)==c) n++} END{print n+0}' "$RULES_FILE")"
 
 runtime_hash="$(printf '%s' "$runtime_rules" | sha256sum | awk '{print $1}')"
 persisted_hash="$(printf '%s' "$persisted_rules" | sha256sum | awk '{print $1}')"
