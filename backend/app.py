@@ -1,27 +1,18 @@
 from __future__ import annotations
 
-import hashlib
 import hmac
 import os
-from datetime import datetime, timezone
 from functools import wraps
 from typing import Callable
 
 from flask import Flask, current_app, jsonify, request
 
 from backend.db import connect, init_db, json_dumps, json_loads
+from backend.utils import token_hash, utc_now
 
 
 HEALTH_STATES = {"SYNCED", "DRIFT", "STALE", "ERROR"}
 ACTION_STATUSES = {"SUCCEEDED", "FAILED"}
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-
-
-def token_hash(token: str) -> str:
-    return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
 def json_error(message: str, status: int):
@@ -245,15 +236,9 @@ def create_app(db_path: str | None = None) -> Flask:
 
         return "", 204
 
-    return app
-
-
-app = create_app()
-
 
 if __name__ == "__main__":
-    # Development only. Production must use a WSGI server.
-    app.run(
+    create_app().run(
         host=os.environ.get("IP_ADMIN_BIND", "127.0.0.1"),
         port=int(os.environ.get("IP_ADMIN_PORT", "8080")),
         debug=False,
