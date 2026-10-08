@@ -1,0 +1,181 @@
+openapi: 3.0.3
+info:
+  title: IP_ADMIN_V2 API
+  version: 0.1.0
+
+servers:
+  - url: https://ip-admin-v2.internal
+
+security:
+  - bearerAuth: []
+
+paths:
+  /healthz:
+    get:
+      security: []
+      operationId: health
+      responses:
+        '200':
+          description: Service health
+
+  /v1/nodes/{node_name}/desired:
+    get:
+      operationId: getDesiredState
+      parameters:
+        - $ref: '#/components/parameters/NodeName'
+      responses:
+        '200':
+          description: Desired state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DesiredState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Desired state not found
+
+  /v1/nodes/{node_name}/heartbeat:
+    post:
+      operationId: postHeartbeat
+      parameters:
+        - $ref: '#/components/parameters/NodeName'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Heartbeat'
+      responses:
+        '204':
+          description: Accepted
+        '400':
+          description: Invalid heartbeat
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/nodes/{node_name}/actions/{action_id}/result:
+    post:
+      operationId: postActionResult
+      parameters:
+        - $ref: '#/components/parameters/NodeName'
+        - name: action_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionResult'
+      responses:
+        '204':
+          description: Accepted
+        '400':
+          description: Invalid action result
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Action not found
+        '409':
+          description: Stale action
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  parameters:
+    NodeName:
+      name: node_name
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9._-]+$'
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+
+  schemas:
+    DesiredState:
+      type: object
+      required:
+        - node_name
+        - generation
+        - profile
+        - state
+        - desired_hash
+        - updated_at
+      properties:
+        node_name:
+          type: string
+        generation:
+          type: integer
+          minimum: 1
+        profile:
+          type: string
+        state:
+          type: object
+        desired_hash:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        updated_at:
+          type: string
+          format: date-time
+
+    Heartbeat:
+      type: object
+      required:
+        - agent_version
+        - runtime_hash
+        - persisted_hash
+        - runtime_rule_count
+        - persisted_rule_count
+        - runtime_jump
+        - persisted_jump
+        - health_state
+      properties:
+        agent_version:
+          type: string
+        desired_generation:
+          type: integer
+          minimum: 1
+        runtime_hash:
+          type: string
+        persisted_hash:
+          type: string
+        runtime_rule_count:
+          type: integer
+          minimum: 0
+        persisted_rule_count:
+          type: integer
+          minimum: 0
+        runtime_jump:
+          type: integer
+          minimum: 0
+        persisted_jump:
+          type: integer
+          minimum: 0
+        health_state:
+          type: string
+          enum: [SYNCED, DRIFT, STALE, ERROR]
+
+    ActionResult:
+      type: object
+      required:
+        - generation
+        - status
+      properties:
+        generation:
+          type: integer
+          minimum: 1
+        status:
+          type: string
+          enum: [SUCCEEDED, FAILED]
+        observed:
+          type: object

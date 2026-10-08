@@ -6,27 +6,50 @@
 - [x] Mantener IP Manager actual intacto.
 - [x] Mantener IVR/legacy como compatibilidad.
 - [x] Definir Git como fuente de código.
-- [ ] Definir modelo de datos.
-- [ ] Definir API.
-- [ ] Definir contrato Agent <-> Backend.
-- [ ] Definir estados DESIRED/APPLIED/PERSISTED.
+- [x] Definir modelo de datos.
+- [x] Definir API inicial.
+- [x] Definir contrato Agent <-> Backend.
+- [x] Definir estados DESIRED/APPLIED/PERSISTED.
 
 ## Fase 1 — Observabilidad
 
-- [ ] Agent en modo read-only.
-- [ ] Inventario de reglas.
-- [ ] Hash de estado.
-- [ ] Detección de drift.
-- [ ] Reporte de discrepancias.
-- [ ] Auditoría.
+- [x] Agent en modo read-only.
+- [x] Inventario de reglas.
+- [x] Hash de estado.
+- [x] Detección de drift.
+- [x] Reporte de discrepancias.
+- [x] CI básica del agent.
+- [x] Auditoría centralizada.
 
-## Fase 2 — Reconciliación controlada
+## Fase 2A — Backend mínimo
+
+- [x] API Flask inicial.
+- [x] SQLite con WAL y busy timeout.
+- [x] Autenticación por token por nodo.
+- [x] Endpoint DESIRED.
+- [x] Endpoint HEARTBEAT.
+- [x] Endpoint ACTION RESULT.
+- [x] Auditoría de heartbeat y resultados.
+- [x] Rechazo de resultados de acciones obsoletas.
+- [x] Tests unitarios del contrato.
+- [x] Reporter de heartbeat read-only.
+- [x] Test del reporter sin red.
+- [ ] Endpoint/flujo de administración de nodos.
+- [ ] Revisión de seguridad antes de exposición de red.
+- [ ] TLS/proxy de producción.
+- [ ] Métrica y monitoreo central.
+
+## Fase 2B — Reconciliación controlada
 
 - [ ] Aplicación idempotente.
-- [ ] Validación después de cada cambio.
+- [ ] Validación antes de cada cambio.
 - [ ] Persistencia automática.
+- [ ] Snapshot pre-cambio.
 - [ ] Rollback local.
-- [ ] Health check.
+- [ ] Health check post-cambio.
+- [ ] Modo DRY_RUN.
+- [ ] Acción con generación y expiración.
+- [ ] Evidencia de resultado.
 
 ## Fase 3 — Piloto
 
@@ -35,6 +58,7 @@
 - [ ] Comparar contra IP Manager actual.
 - [ ] Documentar diferencias.
 - [ ] Validar reinicio.
+- [ ] Probar recuperación de reglas después de reboot.
 
 ## Fase 4 — Migración gradual
 
@@ -42,6 +66,7 @@
 - [ ] Mantener IVR para nodos legacy.
 - [ ] Evitar doble escritura sobre el mismo recurso.
 - [ ] Monitorear drift.
+- [ ] Migración por grupos con rollback.
 
 ## Fase 5 — Consolidación
 
