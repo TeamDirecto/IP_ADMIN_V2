@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: IP_ADMIN_V2 API
+  version: 0.1.0
+paths:
+  /v1/nodes/{node_name}/desired:
+    get:
+      operationId: getDesiredState
+      responses:
+        '200':
+          description: Desired state
+  /v1/nodes/{node_name}/heartbeat:
+    post:
+      operationId: postHeartbeat
+      responses:
+        '204':
+          description: Accepted
+        '401':
+          description: Unauthorized
+  /v1/nodes/{node_name}/actions/{action_id}/result:
+    post:
+      operationId: postActionResult
+      responses:
+        '204':
+          description: Accepted
+        '409':
+          description: Stale action
+        '401':
+          description: Unauthorized
