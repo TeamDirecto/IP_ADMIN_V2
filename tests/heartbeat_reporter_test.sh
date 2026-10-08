@@ -4,6 +4,7 @@ set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 REPORTER="$ROOT/agent/ip-admin-heartbeat.sh"
 TMP="$(mktemp -d /tmp/ip-admin-v2-heartbeat.XXXXXX)"
+export TMP
 trap 'rm -rf "$TMP"' EXIT
 
 cat > "$TMP/agent" <<'EOF_AGENT'
