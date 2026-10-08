@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Normalize script permissions
+        run: chmod +x agent/ip-admin-agent.sh tests/agent_observer_test.sh
       - name: Bash syntax
         run: |
           bash -n agent/ip-admin-agent.sh
