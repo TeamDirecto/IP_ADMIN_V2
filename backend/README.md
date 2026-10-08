@@ -55,7 +55,7 @@ python3 -m backend.manage set-desired \
 Run locally only:
 
 ```bash
-FLASK_APP=backend.app flask run --host 127.0.0.1 --port 8080
+FLASK_APP=backend.wsgi flask run --host 127.0.0.1 --port 8080
 ```
 
 For production, use a WSGI server and place TLS/authentication controls in front of the service. Do not use Flask's development server as the production service.
@@ -95,7 +95,7 @@ Before enabling writes on any node we will add:
 1. explicit DRY_RUN;
 2. action generation and expiry;
 3. pre-change snapshot;
-4. `iptables-restore --test`;
+4. iptables-restore --test;
 5. atomic apply;
 6. post-change validation;
 7. automatic rollback;
