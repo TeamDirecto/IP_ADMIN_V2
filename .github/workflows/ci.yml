@@ -22,3 +22,20 @@ jobs:
           bash -n tests/agent_observer_test.sh
       - name: Agent observer tests
         run: bash tests/agent_observer_test.sh
+
+  backend:
+    name: backend-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install -r backend/requirements.txt
+      - name: Compile
+        run: python -m compileall -q backend
+      - name: API tests
+        run: python -m unittest discover -s backend/tests -p 'test_*.py'
