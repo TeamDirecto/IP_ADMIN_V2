@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "foundation/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  agent:
+    name: agent-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Bash syntax
+        run: |
+          bash -n agent/ip-admin-agent.sh
+          bash -n tests/agent_observer_test.sh
+      - name: Agent observer tests
+        run: tests/agent_observer_test.sh
