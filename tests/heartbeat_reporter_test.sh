@@ -17,12 +17,16 @@ cat > "$TMP/curl" <<'EOF_CURL'
 #!/bin/bash
 set -eu
 
+found_desired=0
 url=""
 for arg in "$@"; do
   url="$arg"
+  if [[ "$arg" == */desired ]]; then
+    found_desired=1
+  fi
 done
 
-if [[ "$url" == */desired ]]; then
+if [ "$found_desired" -eq 1 ]; then
   printf '%s\n' '{"node_name":"test-node","generation":7,"profile":"test","state":{},"desired_hash":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","updated_at":"2026-10-08T00:00:00+00:00"}'
   exit 0
 fi
