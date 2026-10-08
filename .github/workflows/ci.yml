@@ -21,4 +21,4 @@ jobs:
           bash -n agent/ip-admin-agent.sh
           bash -n tests/agent_observer_test.sh
       - name: Agent observer tests
-        run: tests/agent_observer_test.sh
+        run: bash tests/agent_observer_test.sh
