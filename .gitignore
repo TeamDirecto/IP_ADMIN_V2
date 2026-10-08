@@ -1,0 +1,32 @@
+# Secrets / credentials
+.env
+.env.*
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# Runtime
+*.log
+*.pid
+*.sock
+*.tmp
+tmp/
+runtime/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Local deployment artifacts
+dist/
+build/
