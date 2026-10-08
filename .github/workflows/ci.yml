@@ -17,13 +17,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Normalize script permissions
-        run: chmod +x agent/ip-admin-agent.sh tests/agent_observer_test.sh
+        run: chmod +x agent/ip-admin-agent.sh agent/ip-admin-heartbeat.sh tests/agent_observer_test.sh tests/heartbeat_reporter_test.sh
       - name: Bash syntax
         run: |
           bash -n agent/ip-admin-agent.sh
+          bash -n agent/ip-admin-heartbeat.sh
           bash -n tests/agent_observer_test.sh
+          bash -n tests/heartbeat_reporter_test.sh
       - name: Agent observer tests
         run: bash tests/agent_observer_test.sh
+      - name: Heartbeat reporter tests
+        run: bash tests/heartbeat_reporter_test.sh
 
   backend:
     name: backend-tests
