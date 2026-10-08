@@ -32,6 +32,8 @@
 - [x] Auditoría de heartbeat y resultados.
 - [x] Rechazo de resultados de acciones obsoletas.
 - [x] Tests unitarios del contrato.
+- [x] Reporter de heartbeat read-only.
+- [x] Test del reporter sin red.
 - [ ] Endpoint/flujo de administración de nodos.
 - [ ] Revisión de seguridad antes de exposición de red.
 - [ ] TLS/proxy de producción.
